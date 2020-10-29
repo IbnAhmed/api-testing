@@ -1,0 +1,280 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Add Marker/s</title>
+
+
+
+    <style>
+       /* Set the size of the div element that contains the map */
+      #map {
+        height: 740px;  /* The height is 400 pixels */
+        width: 1100px;  /* The width is the width of the web page */
+        margin: auto
+       }
+       .list-of-location{
+          display: flex;
+          justify-content: center;
+          flex-wrap: wrap;
+          padding: 0
+       }
+       .list-of-location li {
+           list-style: none;
+       }
+
+       .list-of-location li a {
+           text-decoration: none;
+           padding: 10px 20px;
+           background: #FF9800;
+           margin: 10px;
+           color: white;
+           border-radius: 5px;
+           box-shadow: 2px 3px 2px 2px #d37e00;
+           display: block;
+           font-size: 16px;
+           font-family: sans-serif;
+           font-weight: 900;
+       }
+
+       .list-of-location li a:active, .list-of-location li.active a {
+           box-shadow: inset 0px 0px 2px 3px #d37e00;
+           transform: translate(2px, 3px);
+       }
+    </style>
+
+    <script type="text/javascript">
+      /*Polyfill*/
+        if (!Element.prototype.matches) Element.prototype.matches = Element.prototype.msMatchesSelector;
+        if (!Element.prototype.closest) Element.prototype.closest = function (selector) {
+            var el = this;
+            while (el) {
+                if (el.matches(selector)) {
+                    return el;
+                }
+                el = el.parentElement;
+            }
+        };
+      /*Polyfill*/
+    </script>
+  </head>
+  <body>
+    <h1>Add Marker/s</h1>
+
+    <ul class="list-of-location">
+      <li>
+          <a href="javascript:;" class="map-location" data-location="dhaka">Dhaka</a>
+      </li>
+      <li class="active">
+          <a href="javascript:;" class="map-location" data-location="california">California</a>
+      </li>
+      <li>
+          <a href="javascript:;" class="map-location" data-location="berlin">Berlin</a>
+      </li>
+      <li>
+          <a href="javascript:;" class="map-location" data-location="tokyo">Tokyeo</a>
+      </li>
+    </ul>
+    <!--The div element for the map -->
+    <div id="map"></div>
+	
+
+    <script>
+		  // cordinate array
+  		let cordinates = [
+          {
+              state:'dhaka',
+              location_cordinates: [
+                  {
+                      lat: 23.7877329,
+                      lng: 90.4104783,
+                      title: 'Test Title',
+                      info: '<h4 style="margin: 0;">Gulshan Branch</h4><br>House: 12, Road: 5, Gulshan-2, Dhaka, Bangladesh<br> <hr style="border-top: 0;width: 50%;border-color: #c2c2c2;"> <h5 style="margin: 0;text-align: center;">Stay with us</h5>'
+                  },
+                  {
+                      lat: 23.7949389,
+                      lng: 90.4119483,
+                      title: 'Test Title',
+                      info: 'lorem ipsumm doleo lorem ipsumm doleo lorem ipsumm doleo '
+                  },
+                  {
+                      lat: 23.7949189,
+                      lng: 90.4188573,
+                      title: 'Test Title',
+                      info: 'lorem ipsumm doleo lorem ipsumm doleo lorem ipsumm doleo '
+                  }
+              ]
+          },
+          {
+              state:'california',
+              location_cordinates: [
+                  
+                  {
+                      lat: 36.9661843,
+                      lng: -120.8669717,
+                      title: 'Test Title',
+                      info: 'lorem ipsumm doleo lorem ipsumm doleo lorem ipsumm doleo '
+                  },
+                  // {
+                  //     lat: 36.9535096,
+                  //     lng: -120.8546545,
+                  //     title: 'Test Title',
+                  //     info: 'lorem ipsumm doleo lorem ipsumm doleo lorem ipsumm doleo '
+                  // },
+                  {
+                      lat: 36.8295683,
+                      lng: -120.6919827,
+                      title: 'Test Title',
+                      info: '<h4 style="margin: 0;">We are open</h4><br>12.00pm - 7.00pm <b>&</b> 8.00pm - 11.00pm<br> <hr style="border-top: 0;width: 50%;border-color: #c2c2c2;"> <h5 style="margin: 0;text-align: center;">Stay with us</h5>'
+                  },
+                  {
+                      lat: 38.3714757,
+                      lng: -122.997513,
+                      title: 'Test Title',
+                      info: 'lorem ipsumm doleo lorem ipsumm doleo lorem ipsumm doleo '
+                  },
+              ]
+      
+          },
+          {
+              state:'florida',
+              location_cordinates: [
+                  {
+                      lat: 27.8951707,
+                      lng: -82.6965572,
+                      title: 'Test Title',
+                      info: 'lorem ipsumm doleo lorem ipsumm doleo lorem ipsumm doleo '
+                  },
+                  {
+                      lat: 28.7715815,
+                      lng: -81.8825622,
+                      title: 'Test Title',
+                      info: 'lorem ipsumm doleo lorem ipsumm doleo lorem ipsumm doleo '
+                  }
+              ]
+      
+          },
+          {
+              state:'georgia',
+              location_cordinates: [
+                  {
+                      lat: 33.6155784,
+                      lng: -84.4080457,
+                      title: 'Test Title',
+                      info: 'lorem ipsumm doleo lorem ipsumm doleo lorem ipsumm doleo '
+                  },
+                  {
+                      lat: 33.9930698,
+                      lng: -83.3836734,
+                      title: 'Test Title',
+                      info: 'lorem ipsumm doleo lorem ipsumm doleo lorem ipsumm doleo '
+                  }
+              ]
+          }
+      ];
+
+      // array for marker object
+      let markers = [];
+
+	    // Initialize and add the map
+	    function initMap() {
+	      function dropMarker(location = null){
+            if(location) {
+              let location_cordinates = [];
+              const popup = new google.maps.InfoWindow();
+              const bounds = new google.maps.LatLngBounds();
+                  
+              // find lat-lng from big array
+              for(i=0;i<cordinates.length;i++){
+                  if(cordinates[i].state == location){
+                      location_cordinates = cordinates[i].location_cordinates;
+                      break;
+                  }
+              }
+
+              // remove old marker from map
+              for (var i = markers.length - 1; i >= 0; i--) {
+                  markers[i].setMap(null);
+              }
+              markers = [];
+
+              // put the markers in the map
+              for (var i = location_cordinates.length - 1; i >= 0; i--) {
+                  let cordinate = location_cordinates[i];
+                  let latLng = new google.maps.LatLng(cordinate.lat, cordinate.lng);
+                  let marker = new google.maps.Marker({
+                      position: latLng,
+                      title: cordinate.title,
+                      map: map,
+                      icon: 'http://maps.google.com/mapfiles/kml/pushpin/purple-pushpin.png'
+                  });
+                  // map.setCenter(latLng);
+
+                  bounds.extend(latLng);
+
+                  markers.push(marker);
+                  google.maps.event.addListener(marker, 'click', function(e) {
+                      popup.setContent(cordinate.info); 
+                      popup.open(map, this);
+                  });
+                  google.maps.event.addListener(map, 'zoom_changed', function() {
+                      zoomChangeBoundsListener = 
+                          google.maps.event.addListener(map, 'bounds_changed', function(event) {
+                              if (this.getZoom() > 16 && this.initialZoom == true) {
+                                  // Change max/min zoom here
+                                  this.setZoom(16);
+                                  this.initialZoom = false;
+                              }
+                          google.maps.event.removeListener(zoomChangeBoundsListener);
+                      });
+                  });
+              }
+              map.initialZoom = true;
+
+              map.fitBounds(bounds);
+            }
+          }
+
+          let el = document.getElementById('map');
+
+          if (el){
+
+              map = new google.maps.Map(el, {scrollwheel:  false});
+
+              dropMarker('california')
+
+          }
+
+
+          // cordinate for selected location
+          document.querySelectorAll('.map-location').forEach((element, i) => {
+              element.addEventListener('click', function(){
+                if(!element.closest('li').classList.contains('active')){
+                  element.closest('.list-of-location').querySelector('.active').classList.remove('active');
+                  
+                  let location = element.getAttribute('data-location');
+                  
+                  dropMarker(location);
+
+                  element.closest('li').classList.add('active');
+                }
+
+              }); 
+          });
+	    }
+    </script>
+    <!--Load the API from the specified URL
+    * The async attribute allows the browser to render the page while the API loads
+    * The key parameter will contain your own API key (which is not needed for this tutorial)
+    * The callback parameter executes the initMap() function
+    -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDy8Da41CikSjf1KhrA2gSauRM-GGF6doo&callback=initMap"
+    type="text/javascript"></script>
+
+        
+  </body>
+</html>

@@ -1,0 +1,131 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Add Marker/s</title>
+
+
+
+    <style>
+       /* Set the size of the div element that contains the map */
+      #map {
+        height: 600px;  /* The height is 400 pixels */
+        width: 100%;  /* The width is the width of the web page */
+       }
+    </style>
+  </head>
+  <body>
+    <h1>Add Marker/s</h1>
+    <!--The div element for the map -->
+    <div id="map"></div>
+	
+
+    <script>
+		// cordinate array
+		let cordinates = [
+            {
+                lat: 32.7980328,
+                lng: -116.9738635,
+                title: 'Canada',
+                info: 'lorem ipsumm doleo lorem ipsumm doleo lorem ipsumm doleo '
+            },
+            {
+                lat: 33.6991392,
+                lng: -117.8414823,
+                title: 'Bangladesh',
+                info: 'lorem ipsumm doleo lorem ipsumm doleo lorem ipsumm doleo '
+            },
+            {
+                lat: 33.5432998,
+                lng: -117.1745623,
+                title: 'India',
+                info: 'lorem ipsumm doleo lorem ipsumm doleo lorem ipsumm doleo '
+            },
+            {
+                lat: 34.2563135,
+                lng: -119.244891,
+                title: 'Nepal',
+                info: 'lorem ipsumm doleo lorem ipsumm doleo lorem ipsumm doleo '
+            }
+        ];
+
+        // array for marker object
+        let markers = [];
+
+	    // Initialize and add the map
+	    function initMap() {
+	      function dropMarker(){
+              let location_cordinates = [];
+              const popup = new google.maps.InfoWindow();
+              const bounds = new google.maps.LatLngBounds();
+                  
+              // find lat-lng from big array
+              location_cordinates = cordinates;
+
+              // remove old marker from map
+              for (var i = markers.length - 1; i >= 0; i--) {
+                  markers[i].setMap(null);
+              }
+              markers = [];
+
+              // put the markers in the map
+              for (var i = location_cordinates.length - 1; i >= 0; i--) {
+                  let cordinate = location_cordinates[i];
+                  let latLng = new google.maps.LatLng(cordinate.lat, cordinate.lng);
+                  let marker = new google.maps.Marker({
+                      position: latLng,
+                      title: cordinate.title,
+                      map: map
+                  });
+                  // map.setCenter(latLng);
+
+                  bounds.extend(latLng);
+
+                  markers.push(marker);
+                  google.maps.event.addListener(marker, 'click', function(e) {
+                      popup.setContent(cordinate.info); 
+                      popup.open(map, this);
+                  });
+                  google.maps.event.addListener(map, 'zoom_changed', function() {
+                      zoomChangeBoundsListener = 
+                          google.maps.event.addListener(map, 'bounds_changed', function(event) {
+                              if (this.getZoom() > 16 && this.initialZoom == true) {
+                                  // Change max/min zoom here
+                                  this.setZoom(16);
+                                  this.initialZoom = false;
+                              }
+                          google.maps.event.removeListener(zoomChangeBoundsListener);
+                      });
+                  });
+              }
+              map.initialZoom = true;
+
+              map.fitBounds(bounds);
+          }
+
+          let el = document.getElementById('map');
+
+          if (el){
+
+              map = new google.maps.Map(el, {scrollwheel:  false});
+
+              dropMarker()
+
+          }
+	    }
+    </script>
+    <!--Load the API from the specified URL
+    * The async attribute allows the browser to render the page while the API loads
+    * The key parameter will contain your own API key (which is not needed for this tutorial)
+    * The callback parameter executes the initMap() function
+    -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDy8Da41CikSjf1KhrA2gSauRM-GGF6doo&callback=initMap"
+    type="text/javascript"></script>
+
+        
+  </body>
+</html>
